@@ -106,8 +106,6 @@
 
  ![img](https://upload-images.jianshu.io/upload_images/7779607-e1716801d002f2b1.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/)
 
-- 
-
  ### 总结
 
 - 红黑树与平衡搜索二叉树AVL相比，高效地实现了增删查三种功能，该数据结构被广泛应用如：

@@ -306,7 +306,7 @@ public class MyCalculatorProxy {
 ```java
 @Component
 public class MyCalculator1 implements Calculator{
-    @Action
+    @Action//侵入式的实现方式
     public int add(int a, int b) {
         return a+b;
     }
@@ -333,7 +333,7 @@ public class LogAspect {
      * "返回类型 包.类.方法(参数类型，参数个数)."
      * 即指定了某些函数，定义了一些pointCut
      */
-    @Pointcut(value = "execution(* org.javalearn.aop.MyCalculator1.*(..))")//相当于写了一个拦截的规则，不用在源代码上写@Actio注解
+    @Pointcut(value = "execution(* org.javalearn.aop.MyCalculator1.*(..))")//相当于写了一个拦截的规则，不用在源代码上写@Actio注解，实现非侵入式的切面实现
     public void pointCut1(){
 
     }
@@ -407,8 +407,6 @@ public class LogAspect {
         </aop:config>
 </beans>
 ```
-
-
 
 
 

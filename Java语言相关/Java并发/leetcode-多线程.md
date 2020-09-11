@@ -2,59 +2,61 @@
 
 ### wait()和notify()方法的实现 ###
 
-	public class Test1 {
-	    private static Integer count = 0;
-	    private static final Integer FULL = 10;
-	    private static String LOCK = "lock";
-	
-	    public static void main(String[] args) {
-	        Test1 test1 = new Test1();
-	        new Thread(test1.new Producer()).start();
-	        new Thread(test1.new Consumer()).start();
-	        new Thread(test1.new Producer()).start();
-	        new Thread(test1.new Consumer()).start();
-	    }
-	
-	    class Producer implements Runnable {
-	        @Override
-	        public void run() {
-	            while (true){
-	                synchronized (LOCK) {
-	                    while (count == FULL) {
-	                        try {
-	                            LOCK.wait();
-	                        } catch (Exception e) {
-	                            e.printStackTrace();
-	                        }
-	                    }
-	                    count++;
-	                    System.out.println(Thread.currentThread().getName() + "生产者生产，目前总共有" + count);
-	                    LOCK.notifyAll();
-	                }
-	            }
-	        }
-	    }
-	
-	    class Consumer implements Runnable {
-	        @Override
-	        public void run() {
-	            while (true){
-	                synchronized (LOCK) {
-	                    while (count == 0) {
-	                        try {
-	                            LOCK.wait();
-	                        } catch (Exception e) {
-	                            e.printStackTrace();
-	                        }
-	                    }
-	                    count--;
-	                    System.out.println(Thread.currentThread().getName() + "消费者消费，目前总共有" + count);
-	                    LOCK.notifyAll();
-	                }
-	            }
-	        }
-	    }
-	}
+```java
+public class Test1 {
+    private static Integer count = 0;
+    private static final Integer FULL = 10;
+    private static String LOCK = "lock";
+
+    public static void main(String[] args) {
+        Test1 test1 = new Test1();
+        new Thread(test1.new Producer()).start();
+        new Thread(test1.new Consumer()).start();
+        new Thread(test1.new Producer()).start();
+        new Thread(test1.new Consumer()).start();
+    }
+
+    class Producer implements Runnable {
+        @Override
+        public void run() {
+            while (true){
+                synchronized (LOCK) {
+                    while (count == FULL) {
+                        try {
+                            LOCK.wait();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    count++;
+                    System.out.println(Thread.currentThread().getName() + "生产者生产，目前总共有" + count);
+                    LOCK.notifyAll();
+                }
+            }
+        }
+    }
+
+    class Consumer implements Runnable {
+        @Override
+        public void run() {
+            while (true){
+                synchronized (LOCK) {
+                    while (count == 0) {
+                        try {
+                            LOCK.wait();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    count--;
+                    System.out.println(Thread.currentThread().getName() + "消费者消费，目前总共有" + count);
+                    LOCK.notifyAll();
+                }
+            }
+        }
+    }
+}
+```
 
 ### 可重入锁ReentrantLock的实现（await和signal） ###
 
@@ -340,8 +342,9 @@ java.util.concurrent.lock 中的 Lock 框架是锁定的一个抽象，通过对
 	                e.printStackTrace();
 	            }
 	        }
-	
-	
+
+
+​	
 	        public void thinking(){
 	            System.out.println("I am Thinking:"+name);
 	            try {

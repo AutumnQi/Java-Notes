@@ -38,23 +38,25 @@ public static void listAllFiles(File dir) {
 
 将缓冲区内容写入到文件中
 
-	public static void copyFile(String src, String dist) throws IOException {
-	    FileInputStream in = new FileInputStream(src);
-	    FileOutputStream out = new FileOutputStream(dist);
-	
-	    byte[] buffer = new byte[20 * 1024];
-	    int cnt;
-	
-	    // read() 最多读取 buffer.length 个字节
-	    // 返回的是实际读取的个数
-	    // 返回 -1 的时候表示读到 eof，即文件尾
-	    while ((cnt = in.read(buffer, 0, buffer.length)) != -1) {
-	        out.write(buffer, 0, cnt);
-	    }
-	
-	    in.close();
-	    out.close();
-	}
+```java
+public static void copyFile(String src, String dist) throws IOException {
+    FileInputStream in = new FileInputStream(src);
+    FileOutputStream out = new FileOutputStream(dist);
+
+    byte[] buffer = new byte[20 * 1024];
+    int cnt;
+
+    // read() 最多读取 buffer.length 个字节
+    // 返回的是实际读取的个数
+    // 返回 -1 的时候表示读到 eof，即文件尾
+    while ((cnt = in.read(buffer, 0, buffer.length)) != -1) {
+        out.write(buffer, 0, cnt);
+    }
+
+    in.close();
+    out.close();
+}
+```
 
 ## 装饰者模式
 
@@ -306,32 +308,32 @@ Java 中的网络支持：
 
 
 ​	
-	    @Override
-	    public void run() {
-	        try {
-	            //获取客户端信息
-	            InetAddress inetAddress = socket.getInetAddress();
-	            //ip地址
-	            String ip = inetAddress.getHostAddress();
-	            System.out.println("客户端："+ip+"连接成功");
-	            //输入输出流
-	            dataInputStream = new DataInputStream(socket.getInputStream());
-	            dataOutputStream = new DataOutputStream(socket.getOutputStream());
-	            //接受客户端消息
-	            String msg = dataInputStream.readUTF();
-	            System.out.println("客户端："+msg);
-	
+​	    @Override
+​	    public void run() {
+​	        try {
+​	            //获取客户端信息
+​	            InetAddress inetAddress = socket.getInetAddress();
+​	            //ip地址
+​	            String ip = inetAddress.getHostAddress();
+​	            System.out.println("客户端："+ip+"连接成功");
+​	            //输入输出流
+​	            dataInputStream = new DataInputStream(socket.getInputStream());
+​	            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+​	            //接受客户端消息
+​	            String msg = dataInputStream.readUTF();
+​	            System.out.println("客户端："+msg);
+​	
 	            //向客户端发送消息
 	            dataOutputStream.writeUTF("收到");
 
 
 ​	
-	        }catch (IOException e){
-	            e.printStackTrace();
-	        }finally {
-	            closeResources(dataInputStream, dataOutputStream, socket);
-	        }
-	
+​	        }catch (IOException e){
+​	            e.printStackTrace();
+​	        }finally {
+​	            closeResources(dataInputStream, dataOutputStream, socket);
+​	        }
+​	
 	    }
 	
 	    private void closeResources(DataInputStream dataInputStream, DataOutputStream dataOutputStream, Socket socket){

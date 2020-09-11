@@ -7,6 +7,8 @@
 1. 线程安全与否
 1. 是否允许空，是否允许重复，是否有序
 
+![截屏2020-09-04 上午11.28.45](../Images/截屏2020-09-04 上午11.28.45.png)
+
 ## Colletion，iterator，comparable ##
 
 一般认为Collection是最上层接口，但是hashmap实际上实现的是Map接口。
@@ -180,13 +182,13 @@ LinkedList提供了两个构造方法：LinkedList()和LinkedList(Collection<? e
 		add(E e): 将指定元素添加到此列表的结尾。
 
 		add(int index, E element)：在此列表中指定的位置插入指定的元素。
-
+	
 		addAll(Collection<? extends E> c)：添加指定 collection 中的所有元素到此列表的结尾，顺序是指定 collection 的迭代器返回这些元素的顺序。
-
+	
 		addAll(int index, Collection<? extends E> c)：将指定 collection 中的所有元素从指定位置开始插入此列表。
-
+	
 		AddFirst(E e): 将指定元素插入此列表的开头。
-
+	
 		addLast(E e): 将指定元素添加到此列表的结尾。
 
 
@@ -195,19 +197,19 @@ LinkedList提供了两个构造方法：LinkedList()和LinkedList(Collection<? e
 		remove(Object o)：从此列表中移除首次出现的指定元素（如果存在）。
 
 		clear()： 从此列表中移除所有元素。
-
+	
 		remove()：获取并移除此列表的头（第一个元素）。
-
+	
 		remove(int index)：移除此列表中指定位置处的元素。
-
+	
 		remove(Objec o)：从此列表中移除首次出现的指定元素（如果存在）。
-
+	
 		removeFirst()：移除并返回此列表的第一个元素。
-
+	
 		removeFirstOccurrence(Object o)：从此列表中移除第一次出现的指定元素（从头部到尾部遍历列表时）。
-
+	
 		removeLast()：移除并返回此列表的最后一个元素。
-
+	
 		removeLastOccurrence(Object o)：从此列表中移除最后一次出现的指定元素（从头部到尾部遍历列表时。
 
 - 查
@@ -295,7 +297,7 @@ Map扩容操作的核心在于重哈希。所谓重哈希是指重新计算原Ha
 hashmap的增删改查方式比较简单，都是遍历，替换。有一点要注意的是key相等时，替换元素，不相等时连成链表。
 
 #### 存储实现：put(key,vlaue)
-	
+
 	public V put(K key, V value) {
 	        //当key为null，调用putForNullKey方法，保存null与table第一个位置中，这是HashMap允许为null的原因
 	        if (key == null)

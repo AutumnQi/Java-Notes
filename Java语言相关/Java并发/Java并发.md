@@ -12,39 +12,45 @@
 
 需要实现接口中的run()方法。
 
-	public class MyRunnable implements Runnable {
-	    @Override
-	    public void run() {
-	        // ...
-	    }
-	}
+```java
+public class MyRunnable implements Runnable {
+    @Override
+    public void run() {
+        // ...
+    }
+}
+```
 
 使用 Runnable 实例再创建一个 Thread 实例，然后调用 Thread 实例的 start() 方法来启动线程。
 	
-	public static void main(String[] args) {
-	    MyRunnable instance = new MyRunnable();
-	    Thread thread = new Thread(instance);
-	    thread.start();
-	}
+```java
+public static void main(String[] args) {
+    MyRunnable instance = new MyRunnable();
+    Thread thread = new Thread(instance);
+    thread.start();
+}
+```
 
 ## 实现Callable接口 ##
 
 与 Runnable 相比，Callable 可以有返回值，返回值通过 FutureTask 进行封装。
 
 
-	public class MyCallable implements Callable<Integer> {
-	    public Integer call() {
-	        return 123;
-	    }
-	}
+```java
+public class MyCallable implements Callable<Integer> {
+    public Integer call() {
+        return 123;
+    }
+}
 
-	public static void main(String[] args) throws ExecutionException, InterruptedException {
-	    MyCallable mc = new MyCallable();
-	    FutureTask<Integer> ft = new FutureTask<>(mc);
-	    Thread thread = new Thread(ft);
-	    thread.start();
-	    System.out.println(ft.get());
-	}
+public static void main(String[] args) throws ExecutionException, InterruptedException {
+    MyCallable mc = new MyCallable();
+    FutureTask<Integer> ft = new FutureTask<>(mc);
+    Thread thread = new Thread(ft);
+    thread.start();
+    System.out.println(ft.get());
+}
+```
 
 ## 继承Tread类
 
@@ -52,16 +58,18 @@
 
 当调用 start() 方法启动一个线程时，虚拟机会将该线程放入就绪队列中等待被调度，当一个线程被调度时会执行该线程的 run() 方法。
 
-	public class MyThread extends Thread {
-	    public void run() {
-	        // ...
-	    }
-	}
-	
-	public static void main(String[] args) {
-	    MyThread mt = new MyThread();
-	    mt.start();
-	}
+```java
+public class MyThread extends Thread {
+    public void run() {
+        // ...
+    }
+}
+
+public static void main(String[] args) {
+    MyThread mt = new MyThread();
+    mt.start();
+}
+```
 
 ## 实现接口 VS 继承 Thread
 
@@ -78,17 +86,20 @@ Executor 管理多个异步任务的执行，而无需程序员显式地管理�
 
 主要有三种Executor：
 
-- CachedThreadPool：根据需要创建线程的线程池，一个任务就需要一个线程，提交任务的速度 > 线程池中线程处理任务的速度就要不断创建新线程；
-- FixedThreadPool：所有任务只能使用固定大小的线程池；
-- SingleThreadExecutor：相当于大小为 1 的 FixedThreadPool。
+- `CachedThreadPool`：根据需要创建线程的线程池，一个任务就需要一个线程，提交任务的速度 > 线程池中线程处理任务的速度就要不断创建新线程；
 
-		public static void main(String[] args) {
+- `FixedThreadPool`：所有任务只能使用固定大小的线程池；
+
+- `SingleThreadExecutor`：相当于大小为 1 的 FixedThreadPool
+```java	
+public static void main(String[] args) {
 		    ExecutorService executorService = Executors.newCachedThreadPool();
 		    for (int i = 0; i < 5; i++) {
 		        executorService.execute(new MyRunnable());
 		    }
 		    executorService.shutdown();
 		}
+```
 
 ## Daemon
 
@@ -100,32 +111,38 @@ main() 属于非守护线程。
 
 在线程启动之前使用 setDaemon() 方法可以将一个线程设置为守护线程。
 
-	public static void main(String[] args) {
-	    Thread thread = new Thread(new MyRunnable());
-	    thread.setDaemon(true);
-	}
+```java
+public static void main(String[] args) {
+    Thread thread = new Thread(new MyRunnable());
+    thread.setDaemon(true);
+}
+```
 
-## sleep()
+### Thread.sleep()
 
 Thread.sleep(millisec) 方法会休眠当前正在执行的线程，millisec 单位为毫秒。
 
 sleep() 可能会抛出 InterruptedException，因为异常不能跨线程传播回 main() 中，因此必须在本地进行处理。线程中抛出的其它异常也同样需要在本地进行处理。
 
-	public void run() {
-	    try {
-	        Thread.sleep(3000);
-	    } catch (InterruptedException e) {
-	        e.printStackTrace();
-	    }
-	}
+```java
+public void run() {
+    try {
+        Thread.sleep(3000);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+}
+```
 
-## yield()
+### Thread.yield()
 
 对静态方法 Thread.yield() 的调用声明了当前线程已经完成了生命周期中最重要的部分，可以切换给其它线程来执行。该方法只是对线程调度器的一个建议，而且也只是建议具有相同优先级的其它线程可以运行。
 
-	public void run() {
-	    Thread.yield();
-	}
+```java
+public void run() {
+    Thread.yield();
+}
+```
 
 # 3.中断 #
 
@@ -137,27 +154,29 @@ sleep() 可能会抛出 InterruptedException，因为异常不能跨线程传播
 
 对于以下代码，在 main() 中启动一个线程之后再中断它，由于线程中调用了 Thread.sleep() 方法，因此会抛出一个 InterruptedException，从而提前结束线程，不执行之后的语句。
 
-	public class InterruptExample {
-	
-	    private static class MyThread1 extends Thread {
-	        @Override
-	        public void run() {
-	            try {
-	                Thread.sleep(2000);
-	                System.out.println("Thread run");
-	            } catch (InterruptedException e) {
-	                e.printStackTrace();
-	            }
-	        }
-	    }
-	}
-	
-	public static void main(String[] args) throws InterruptedException {
-	    Thread thread1 = new MyThread1();
-	    thread1.start();
-	    thread1.interrupt();
-	    System.out.println("Main run");
-	}
+```java
+public class InterruptExample {
+
+    private static class MyThread1 extends Thread {
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(2000);
+                System.out.println("Thread run");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+public static void main(String[] args) throws InterruptedException {
+    Thread thread1 = new MyThread1();
+    thread1.start();
+    thread1.interrupt();
+    System.out.println("Main run");
+}
+```
 
 ----------
 
@@ -174,24 +193,26 @@ sleep() 可能会抛出 InterruptedException，因为异常不能跨线程传播
 
 但是调用 interrupt() 方法会设置线程的中断标记，此时调用 interrupted() 方法会返回 true。因此可以在循环体中使用 interrupted() 方法来判断线程是否处于中断状态，从而提前结束线程。
 
-	public class InterruptExample {
-	
-	    private static class MyThread2 extends Thread {
-	        @Override
-	        public void run() {
-	            while (!interrupted()) {
-	                // ..
-	            }
-	            System.out.println("Thread end");
-	        }
-	    }
-	}
-	
-	public static void main(String[] args) throws InterruptedException {
-	    Thread thread2 = new MyThread2();
-	    thread2.start();
-	    thread2.interrupt();
-	}
+```java
+public class InterruptExample {
+
+    private static class MyThread2 extends Thread {
+        @Override
+        public void run() {
+            while (!interrupted()) {
+                // ..
+            }
+            System.out.println("Thread end");
+        }
+    }
+}
+
+public static void main(String[] args) throws InterruptedException {
+    Thread thread2 = new MyThread2();
+    thread2.start();
+    thread2.interrupt();
+}
+```
 
 
 ----------
@@ -205,19 +226,21 @@ sleep() 可能会抛出 InterruptedException，因为异常不能跨线程传播
 
 以下使用 Lambda 创建线程，相当于创建了一个匿名内部线程。
 
-	public static void main(String[] args) {
-	    ExecutorService executorService = Executors.newCachedThreadPool();
-	    executorService.execute(() -> {
-	        try {
-	            Thread.sleep(2000);
-	            System.out.println("Thread run");
-	        } catch (InterruptedException e) {
-	            e.printStackTrace();
-	        }
-	    });
-	    executorService.shutdownNow();
-	    System.out.println("Main run");
-	}
+```java
+public static void main(String[] args) {
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    executorService.execute(() -> {
+        try {
+            Thread.sleep(2000);
+            System.out.println("Thread run");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    });
+    executorService.shutdownNow();
+    System.out.println("Main run");
+}
+```
 
 
 ----------
@@ -250,35 +273,41 @@ Java 提供了两种锁机制来控制多个线程对共享资源的互斥访问
 
 ### 1. 同步一个代码块
 
-	public void func() {
-	    synchronized (this) {
-	        // ...
-	    }
-	}
+```java
+public void func() {
+    synchronized (this) {
+        // ...
+    }
+}
+```
 
 它只作用于同一个对象，如果调用两个对象上的同步代码块，就不会进行同步。
 
 对于以下代码，使用 ExecutorService 执行了两个线程，由于调用的是同一个对象的同步代码块，因此这两个线程会进行同步，当一个线程进入同步语句块时，另一个线程就必须等待。
 
-	public class SynchronizedExample {
-	
-	    public void func1() {
-	        synchronized (this) {
-	            for (int i = 0; i < 10; i++) {
-	                System.out.print(i + " ");
-	            }
-	        }
-	    }
-	}
+```java
+public class SynchronizedExample {
+
+    public void func1() {
+        synchronized (this) {
+            for (int i = 0; i < 10; i++) {
+                System.out.print(i + " ");
+            }
+        }
+    }
+}
+```
 
 ----------
 
-	public static void main(String[] args) {
-	    SynchronizedExample e1 = new SynchronizedExample();
-	    ExecutorService executorService = Executors.newCachedThreadPool();
-	    executorService.execute(() -> e1.func1());
-	    executorService.execute(() -> e1.func1());
-	}
+```java
+public static void main(String[] args) {
+    SynchronizedExample e1 = new SynchronizedExample();
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    executorService.execute(() -> e1.func1());
+    executorService.execute(() -> e1.func1());
+}
+```
 
 
 ----------
@@ -287,13 +316,15 @@ Java 提供了两种锁机制来控制多个线程对共享资源的互斥访问
 
 对于以下代码，两个线程调用了不同对象的同步代码块，因此这两个线程就不需要同步。从输出结果可以看出，两个线程交叉执行。
 
-	public static void main(String[] args) {
-	    SynchronizedExample e1 = new SynchronizedExample();
-	    SynchronizedExample e2 = new SynchronizedExample();
-	    ExecutorService executorService = Executors.newCachedThreadPool();
-	    executorService.execute(() -> e1.func1());
-	    executorService.execute(() -> e2.func1());
-	}
+```java
+public static void main(String[] args) {
+    SynchronizedExample e1 = new SynchronizedExample();
+    SynchronizedExample e2 = new SynchronizedExample();
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    executorService.execute(() -> e1.func1());
+    executorService.execute(() -> e2.func1());
+}
+```
 
 
 ----------
@@ -302,43 +333,51 @@ Java 提供了两种锁机制来控制多个线程对共享资源的互斥访问
 
 ### 2. 同步一个方法
 
-	public synchronized void func () {
-	    // ...
-	}
+```java
+public synchronized void func () {
+    // ...
+}
+```
 
 它和同步代码块一样，作用于同一个对象。
 
 ### 3. 同步一个类
 
-	public void func() {
-	    synchronized (SynchronizedExample.class) {
-	        // ...
-	    }
-	}
+```java
+public void func() {
+    synchronized (SynchronizedExample.class) {
+        // ...
+    }
+}
+```
 
 作用于整个类，也就是说两个线程调用同一个类的不同对象上的这种同步语句，也会进行同步。
 
-	public class SynchronizedExample {
-	
-	    public void func2() {
-	        synchronized (SynchronizedExample.class) {
-	            for (int i = 0; i < 10; i++) {
-	                System.out.print(i + " ");
-	            }
-	        }
-	    }
-	}
+```java
+public class SynchronizedExample {
+
+    public void func2() {
+        synchronized (SynchronizedExample.class) {
+            for (int i = 0; i < 10; i++) {
+                System.out.print(i + " ");
+            }
+        }
+    }
+}
+```
 
 
 ----------
 
-	public static void main(String[] args) {
-	    SynchronizedExample e1 = new SynchronizedExample();
-	    SynchronizedExample e2 = new SynchronizedExample();
-	    ExecutorService executorService = Executors.newCachedThreadPool();
-	    executorService.execute(() -> e1.func2());
-	    executorService.execute(() -> e2.func2());
-	}
+```java
+public static void main(String[] args) {
+    SynchronizedExample e1 = new SynchronizedExample();
+    SynchronizedExample e2 = new SynchronizedExample();
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    executorService.execute(() -> e1.func2());
+    executorService.execute(() -> e2.func2());
+}
+```
 
 ----------
 
@@ -349,9 +388,11 @@ Java 提供了两种锁机制来控制多个线程对共享资源的互斥访问
 
 ### 4. 同步一个静态方法
 
-	public synchronized static void fun() {
-	    // ...
-	}
+```java
+public synchronized static void fun() {
+    // ...
+}
+```
 
 作用于整个类。
 
@@ -389,36 +430,42 @@ ReentrantLock 是 java.util.concurrent（J.U.C）包中的锁。
 
 在ReentrantLock中，调用lock()方法获取锁；调用unlock()方法释放锁。
 
-	public class LockExample {
-	
-	    private Lock lock = new ReentrantLock();
-	
-	    public void func() {
-	        lock.lock();
-	        try {
-	            for (int i = 0; i < 10; i++) {
-	                System.out.print(i + " ");
-	            }
-	        } finally {
-	            lock.unlock(); // 确保释放锁，从而避免发生死锁。
-	        }
-	    }
-	}
+```java
+public class LockExample {
+
+    private Lock lock = new ReentrantLock();
+
+    public void func() {
+        lock.lock();
+        try {
+            for (int i = 0; i < 10; i++) {
+                System.out.print(i + " ");
+            }
+        } finally {
+            lock.unlock(); // 确保释放锁，从而避免发生死锁。
+        }
+    }
+}
+```
 
 
 ----------
 
-	public static void main(String[] args) {
-	    LockExample lockExample = new LockExample();
-	    ExecutorService executorService = Executors.newCachedThreadPool();
-	    executorService.execute(() -> lockExample.func());
-	    executorService.execute(() -> lockExample.func());
-	}
+```java
+public static void main(String[] args) {
+    LockExample lockExample = new LockExample();
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    executorService.execute(() -> lockExample.func());
+    executorService.execute(() -> lockExample.func());
+}
+```
 
 
 ----------
 
 	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8
+
+### ReentrantLock的实现
 
 ReentrantLock的实现依赖于java同步器框架AQS。AQS使用一个整型的volatile变量（命名为state）来维护同步状态。
 
@@ -430,19 +477,97 @@ ReentrantLock的实现依赖于java同步器框架AQS。AQS使用一个整型的
 - 公平锁获取时，首先会去读这个volatile变量。
 - 非公平锁获取时，首先会用CAS更新这个volatile变量,这个操作同时具有volatile读和volatile写的内存语义。
 
+## Volatile
+
+当一个变量被定义成volatile之后，它将具备两项`特性`:
+
+- 保证此变量对所有线程的可见性，这里的“可见性”是指当一条线程修改了这个变量的值，新值对于其他线程来说是可以立即得知的。
+- 禁止指令重排序优化，保证使用一些volatile变量来进行同步控制时，变量的赋值顺序要保证正确
+
+### volatile在并发时的不安全情况
+
+volatile变量的更新并不是立即的，而是在不同线程使用时去刷新，从而在各个线程的工作内存中可以看作是一致性的(从物理存储的角度看，各个线程的工作内存中volatile变量也可以存在不一致的情况，但由于每次使用之前都要先刷新，执行引擎看不到不一致的情况，因此可以认为不存在一致性问题)。
+
+**然而**，Java中的运算操作借助栈来实现，并非是原子操作，导致volatile变量在并发的条件下一样是不安全的：
+
+```java
+/**
+ * volatile变量自增运算测试 *
+ * @author zzm
+ */
+public class VolatileTest {
+    public static volatile int race = 0;
+    public static void increase() {
+      	race++;
+    }
+    private static final int THREADS_COUNT = 20;
+    public static void main(String[] args) {
+        Thread[] threads = new Thread[THREADS_COUNT]; 
+      for (int i = 0; i < THREADS_COUNT; i++) {
+            threads[i] = new Thread(new Runnable() { 
+            @Override
+            public void run() {
+                for (int i = 0; i < 10000; i++) {
+                    increase(); }
+            } });
+            threads[i].start(); }
+        // 等待所有累加线程都结束
+        while (Thread.activeCount() > 1)
+            Thread.yield();
+        System.out.println(race); }
+}
+```
+
+20个线程，每个线程对race进行自增，最后的结果理论上应该是200000，但实际上的运行结果总是小于200000，原因在于java的自增操作并不是原子的，共包含了4条字节码的指令，故在getstatic时可能是同步的，但运算过程中其他线程可能会对race做修改，所以运算完完后putstatic时可能将较小的race值写回。
+
+核心问题在于：volatile能保证线程在读取变量时是同步的，但在写回时不做检查，导致其线程不安全。
+
+```java
+public static void increase(); 
+Code:
+Stack=2, Locals=0, Args_size=0
+    0: getstatic
+		3: iconst_1
+		4: iadd
+		5: putstatic
+		8: return
+LineNumberTable: line 14: 0 line 15: 8
+```
+
+### Volatile 使用总结
+
+由于volatile变量只能保证可见性，在不符合以下两条规则的运算场景中，我们仍然要通过加锁 (使用synchroniz ed、java.util.concurrent 中的锁或原子类)来保证原子性:
+
+- 运算结果并不依赖变量的当前值，或者能够确保只有单一的线程修改变量的值。
+
+- 变量不需要与其他的状态变量共同参与不变约束。
+
+适合使用volatile变量来控制并发的例子：
+
+```java
+volatile boolean shutdownRequested;
+public void shutdown() { 
+  shutdownRequested = true;
+}
+public void doWork() {
+while (!shutdownRequested) {
+// 代码的业务逻辑 }
+}
+```
+
 ## 如何避免死锁 ##
 
 使用多线程可以提高性能，但是对一些情况会出现线程不安全的问题，为了避免线程不安全问题一般我们是加锁，然后加锁就会出现死锁问题，一般我们Syncronize或ReentrantLock给代码加锁，Syncronize锁住代码块时JVM级别的，会自己解锁，但是使用ReentrantLock的时候一般是搭配try,catch代码块使用，在finally中释放锁。同时配合wait使用，防止一直占有锁。
 
 ## 比较
 
-### 1. 锁的实现 ###
+### 1. 同步方法的实现 ###
 
-synchronized 是 JVM 实现的，而 ReentrantLock 是 JDK 实现的。
+synchronized 是 JVM 实现的，而Volatile 和 ReentrantLock 是 JDK 实现的。
 
 ### 2. 性能
 
-新版本 Java 对 synchronized 进行了很多优化，例如自旋锁等，synchronized 与 ReentrantLock 大致相同。
+新版本 Java 对 synchronized 进行了很多优化，例如自旋锁等，synchronized 与 ReentrantLock 大致相同。Volatile是一种无锁的同步机制，一般而言效率更高。
 
 ### 3. 等待可中断
 
@@ -480,41 +605,43 @@ ReentrantLock 是排他锁，同一时刻只允许一个线程访问，读写锁
 
 对于以下代码，虽然 b 线程先启动，但是因为在 b 线程中调用了 a 线程的 join() 方法，b 线程会等待 a 线程结束才继续执行，因此最后能够保证 a 线程的输出先于 b 线程的输出。
 
-	public class JoinExample {
-	
-	    private class A extends Thread {
-	        @Override
-	        public void run() {
-	            System.out.println("A");
-	        }
-	    }
-	
-	    private class B extends Thread {
-	
-	        private A a;
-	
-	        B(A a) {
-	            this.a = a;
-	        }
-	
-	        @Override
-	        public void run() {
-	            try {
-	                a.join();
-	            } catch (InterruptedException e) {
-	                e.printStackTrace();
-	            }
-	            System.out.println("B");
-	        }
-	    }
-	
-	    public void test() {
-	        A a = new A();
-	        B b = new B(a);
-	        b.start();
-	        a.start();
-	    }
-	}
+```java
+public class JoinExample {
+
+    private class A extends Thread {
+        @Override
+        public void run() {
+            System.out.println("A");
+        }
+    }
+
+    private class B extends Thread {
+
+        private A a;
+
+        B(A a) {
+            this.a = a;
+        }
+
+        @Override
+        public void run() {
+            try {
+                a.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("B");
+        }
+    }
+
+    public void test() {
+        A a = new A();
+        B b = new B(a);
+        b.start();
+        a.start();
+    }
+}
+```
 
 ----------
 
@@ -532,31 +659,35 @@ ReentrantLock 是排他锁，同一时刻只允许一个线程访问，读写锁
 
 使用 wait() 挂起期间，线程会释放锁。这是因为，如果没有释放锁，那么其它线程就无法进入对象的同步方法或者同步控制块中，那么就无法执行 notify() 或者 notifyAll() 来唤醒挂起的线程，造成死锁。
 
-	public class WaitNotifyExample {
-	
-	    public synchronized void before() {
-	        System.out.println("before");
-	        notifyAll();
-	    }
-	
-	    public synchronized void after() {
-	        try {
-	            wait();
-	        } catch (InterruptedException e) {
-	            e.printStackTrace();
-	        }
-	        System.out.println("after");
-	    }
-	}
+```java
+public class WaitNotifyExample {
+
+    public synchronized void before() {
+        System.out.println("before");
+        notifyAll();
+    }
+
+    public synchronized void after() {
+        try {
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("after");
+    }
+}
+```
 
 ----------
 
-	public static void main(String[] args) {
-	    ExecutorService executorService = Executors.newCachedThreadPool();
-	    WaitNotifyExample example = new WaitNotifyExample();
-	    executorService.execute(() -> example.after());
-	    executorService.execute(() -> example.before());
-	}
+```java
+public static void main(String[] args) {
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    WaitNotifyExample example = new WaitNotifyExample();
+    executorService.execute(() -> example.after());
+    executorService.execute(() -> example.before());
+}
+```
 
 ----------
 
@@ -576,43 +707,47 @@ java.util.concurrent 类库中提供了 Condition 类来实现线程之间的协
 
 使用 Lock 来获取一个 Condition 对象。
 
-	public class AwaitSignalExample {
-	
-	    private Lock lock = new ReentrantLock();
-	    private Condition condition = lock.newCondition();
-	
-	    public void before() {
-	        lock.lock();
-	        try {
-	            System.out.println("before");
-	            condition.signalAll();
-	        } finally {
-	            lock.unlock();
-	        }
-	    }
-	
-	    public void after() {
-	        lock.lock();
-	        try {
-	            condition.await();
-	            System.out.println("after");
-	        } catch (InterruptedException e) {
-	            e.printStackTrace();
-	        } finally {
-	            lock.unlock();
-	        }
-	    }
-	}
+```java
+public class AwaitSignalExample {
+
+    private Lock lock = new ReentrantLock();
+    private Condition condition = lock.newCondition();
+
+    public void before() {
+        lock.lock();
+        try {
+            System.out.println("before");
+            condition.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void after() {
+        lock.lock();
+        try {
+            condition.await();
+            System.out.println("after");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+```
 
 
 ----------
 
-	public static void main(String[] args) {
-	    ExecutorService executorService = Executors.newCachedThreadPool();
-	    AwaitSignalExample example = new AwaitSignalExample();
-	    executorService.execute(() -> example.after());
-	    executorService.execute(() -> example.before());
-	}
+```java
+public static void main(String[] args) {
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    AwaitSignalExample example = new AwaitSignalExample();
+    executorService.execute(() -> example.after());
+    executorService.execute(() -> example.before());
+}
+```
 
 ----------
 
@@ -786,14 +921,16 @@ J.U.C 包里面的整数原子类 AtomicInteger 的方法调用了 Unsafe 类的
 
 可以看到 getAndAddInt() 在一个循环中进行，发生冲突的做法是不断的进行重试。
 
-	public final int getAndAddInt(Object var1, long var2, int var4) {
-	    int var5;
-	    do {
-	        var5 = this.getIntVolatile(var1, var2);
-	    } while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));
-	
-	    return var5;
-	}
+```java
+public final int getAndAddInt(Object var1, long var2, int var4) {
+    int var5;
+    do {
+        var5 = this.getIntVolatile(var1, var2);
+    } while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));
+
+    return var5;
+}
+```
 
 ### 3. ABA 
 
@@ -819,27 +956,29 @@ J.U.C 包提供了一个带有标记的原子引用类 AtomicStampedReference �
 
 对于以下代码，thread1 中设置 threadLocal 为 1，而 thread2 设置 threadLocal 为 2。过了一段时间之后，thread1 读取 threadLocal 依然是 1，不受 thread2 的影响。
 
-	public class ThreadLocalExample {
-	    public static void main(String[] args) {
-	        ThreadLocal threadLocal = new ThreadLocal();
-	        Thread thread1 = new Thread(() -> {
-	            threadLocal.set(1);
-	            try {
-	                Thread.sleep(1000);
-	            } catch (InterruptedException e) {
-	                e.printStackTrace();
-	            }
-	            System.out.println(threadLocal.get());
-	            threadLocal.remove();
-	        });
-	        Thread thread2 = new Thread(() -> {
-	            threadLocal.set(2);
-	            threadLocal.remove();
-	        });
-	        thread1.start();
-	        thread2.start();
-	    }
-	}
+```java
+public class ThreadLocalExample {
+    public static void main(String[] args) {
+        ThreadLocal threadLocal = new ThreadLocal();
+        Thread thread1 = new Thread(() -> {
+            threadLocal.set(1);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(threadLocal.get());
+            threadLocal.remove();
+        });
+        Thread thread2 = new Thread(() -> {
+            threadLocal.set(2);
+            threadLocal.remove();
+        });
+        thread1.start();
+        thread2.start();
+    }
+}
+```
 
 每个 Thread 都有一个 ThreadLocal.ThreadLocalMap 对象。
 

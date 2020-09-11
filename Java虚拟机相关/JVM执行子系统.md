@@ -66,7 +66,7 @@
 
   - 将一个常量加载到操作数栈:bipush、sipush、ldc、ldc_w、ldc2_w、aconst_null、iconst_m1、
 
-    iconst_<i>、lconst_<l>、fconst_<f>、dconst_<d>
+    iconst_\<i>、lconst_\<l>、fconst_\<f>、dconst_\<d>
 
   - 扩充局部变量表的访问索引的指令:wide
 
