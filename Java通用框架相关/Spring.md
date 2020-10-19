@@ -13,6 +13,8 @@ Spring 官网列出的 Spring 的 6 个特征:
 - 集成 ：远程处理，JMS，JCA，JMX，电子邮件，任务，调度，缓存。
 - 语言 ：Kotlin，Groovy，动态语言。
 
+![image-20201019015920677](/Users/inlab/Library/Application Support/typora-user-images/image-20201019015920677.png)
+
 # 2. 列举一些重要的Spring模块？ #
 
 - Spring Core： 基础,可以说 Spring 其他所有的功能都需要依赖于该类库。主要提供 IoC 依赖注入功能。

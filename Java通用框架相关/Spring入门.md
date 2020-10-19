@@ -21,11 +21,44 @@
 
 - 对于Hibernate、Spring等框架，**对现有的类结构没有影响，就能够增强JavaBean的功能**
 
-# Ioc
+# IOC
 
 > Inversion of control 控制反转，通过描述（XML或注解）从第三方处获取或生成特定的对象
 
 传统的构架中，A对象中创建了一个B对象，则A对B有着控制权，Ioc的概念及将二者解耦，即把B对象的创建过程交给Spring容器，A对象向容器来申请B的使用，但B的创建和销毁由容器来统一管理。A不需要知道B对象的内部细节，只需要知道根据输入去获得对应的对象。
+
+`官网解释` It is a process whereby objects define their dependencies (that is, the other objects they work with) only through constructor arguments, arguments to a factory method, or properties that are set on the object instance after it is constructed or returned from a factory method. 
+
+现代软件工程中的各个对象存在着复杂的相互依赖关系，IOC的目的是将这些复杂的依赖关系和对象的创建/销毁剥离开来，即所有的对象统一作为Bean由容器对象来负责管理。所谓的控制反转也就是指各个Bean对象拥有自己的控制权，而非想要创建它的对象有控制权。
+
+IOC也被称为DI（Dependency Injection），即先创建对象再注入对象和对象之间的依赖而非先有依赖再创建对象。
+
+## Bean
+
+`官网解释 ` A bean is an object that is instantiated, assembled, and managed by a Spring IoC container.Beans, and the dependencies among them, are reflected in the configuration metadata used by a container.
+
+Bean和其相互之间的里来由container的configuration metadata来进行控制，这一metadata可以是xml，java annotation/code。
+
+Indeed, your application code should have no calls to the `getBean()` method at all and thus have no dependency on Spring APIs at all.
+
+#### Bean的属性
+
+- 包限定的类名称：通常，定义了Bean的实际实现类。
+- Bean行为配置元素，用于声明Bean在容器中的行为（作用域scope，生命周期回调callback等）。
+- 引用其他bean进行其工作所需的bean。这些引用也称为协作者或依赖项。
+- 要在新创建的对象中设置的其他配置设置-例如，池的大小限制或要在管理连接池的bean中使用的连接数。
+
+| Property                 | Explained in…                                                |
+| :----------------------- | :----------------------------------------------------------- |
+| Class                    | [Instantiating Beans](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-factory-class) |
+| Name                     | [Naming Beans](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-beanname) |
+| Scope                    | [Bean Scopes](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-factory-scopes) |
+| Constructor arguments    | [Dependency Injection](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-factory-collaborators) |
+| Properties               | [Dependency Injection](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-factory-collaborators) |
+| Autowiring mode          | [Autowiring Collaborators](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-factory-autowire) |
+| Lazy initialization mode | [Lazy-initialized Beans](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-factory-lazy-init) |
+| Initialization method    | [Initialization Callbacks](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-factory-lifecycle-initializingbean) |
+| Destruction method       | [Destruction Callbacks](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-factory-lifecycle-disposablebean) |
 
 ## Ioc容器的创建及注入
 
@@ -226,7 +259,7 @@ public class JavaConfig {
 #### 5.环境切换 @Profile 
 
 - 在不同的profile下可以有不同的注入方式
-- 在xml文件中体现在<beans profile="dev"><\beans>
+- 在xml文件中体现在\<beans profile="dev"><\beans>
 - 在JavaConfig中体现在@Profile
   - 在容器初始化阶段不传入JavaConfig.class
   - 使用register来进行不同环节的注册

@@ -1,3 +1,5 @@
+
+
 # 一、基础 #
 
 模式定义了数据如何存储、存储什么样的数据以及数据如何分解等信息，数据库和表都有模式。
@@ -10,79 +12,122 @@ SQL 语句不区分大小写，但是数据库表名、列名和值是否区分�
 
 SQL 支持以下三种注释：
 
-	# 注释
-	SELECT *
-	FROM mytable; -- 注释
-	/* 注释1
-	   注释2 */
+```mysql
+# 注释
+SELECT *
+FROM mytable; -- 注释
+/* 注释1
+   注释2 */
+```
 
 数据库创建与使用：
 
-	CREATE DATABASE test;
-	USE test;
+```mysql
+CREATE DATABASE test;
+USE test;
+```
+
+查看数据库的ip地址
+```mysql
+select SUBSTRING_INDEX(host,':',1) as ip , count(*) from information_schema.processlist group by ip;
+```
+
+查看数据库的端口
+
+```mysql
+show variables like 'port' ;  
+```
+
+查看数据库的属性
+
+```mysql
+show variables; 
+```
+
+
 
 # 二、创建表 #
 
-	CREATE TABLE mytable (
-	  # int 类型，不为空，自增
-	  id INT NOT NULL AUTO_INCREMENT,
-	  # int 类型，不可为空，默认值为 1，不为空
-	  col1 INT NOT NULL DEFAULT 1,
-	  # 变长字符串类型，最长为 45 个字符，可以为空
-	  col2 VARCHAR(45) NULL,
-	  # 日期类型，可为空
-	  col3 DATE NULL,
-	  # 设置主键为 id
-	  PRIMARY KEY (`id`));
+```mysql
+CREATE TABLE mytable (
+  # int 类型，不为空，自增
+  id INT NOT NULL AUTO_INCREMENT,
+  # int 类型，不可为空，默认值为 1，不为空
+  col1 INT NOT NULL DEFAULT 1,
+  # 变长字符串类型，最长为 45 个字符，可以为空
+  col2 VARCHAR(45) NULL,
+  # 日期类型，可为空
+  col3 DATE NULL,
+  # 设置主键为 id
+  PRIMARY KEY (`id`));
+```
 
 # 三、修改表 #
 
 ### 添加列 ###
 
-	ALTER TABLE mytable
-	ADD col CHAR(20);
+```mysql
+ALTER TABLE mytable
+ADD col CHAR(20);
+```
 
 ### 删除列 ###
 
-	ALTER TABLE mytable
-	DROP COLUMN col;
+```mysql
+ALTER TABLE mytable
+DROP COLUMN col;
+```
 
 ### 删除表 ###
 
-	DROP TABLE mytable;
+```mysql
+DROP TABLE mytable;
+```
 
 # 四、插入 #
 
 ### 普通插入 ###
 
-	INSERT INTO mytable(col1, col2)
-	VALUES(val1, val2);
+```mysql
+INSERT INTO mytable(col1, col2)
+VALUES(val1, val2);
+```
 
 ### 插入检索出来的数据 ###
 
-	INSERT INTO mytable1(col1, col2)
-	SELECT col1, col2
-	FROM mytable2;
+```mysql
+INSERT INTO mytable1(col1, col2)
+SELECT col1, col2
+FROM mytable2;
+```
 
 ### 将一个表的内容插入到一个新表 ###
 
-	CREATE TABLE newtable AS
-	SELECT * FROM mytable;
+```mysql
+CREATE TABLE newtable AS
+SELECT * FROM mytable;
+```
 
 # 五、更新 #
 
-	UPDATE mytable
-	SET col = val
-	WHERE id = 1;
+```mysql
+UPDATE mytable
+SET col = val
+WHERE id = 1;
+```
 
 # 六、删除 #
 
-	DELETE FROM mytable
-	WHERE id = 1;
+```mysql
+DELETE FROM mytable
+WHERE id = 1;
+```
 
 TRUNCATE TABLE 可以清空表，也就是删除所有行。
 
-	TRUNCATE TABLE mytable;
+```mysql
+TRUNCATE TABLE mytable;
+```
 
 使用更新和删除操作时一定要用 WHERE 子句，不然会把整张表的数据都破坏。可以先用 SELECT 语句进行测试，防止错误删除。
 
@@ -92,8 +137,10 @@ TRUNCATE TABLE 可以清空表，也就是删除所有行。
 
 相同值只会出现一次。它作用于所有列，也就是说所有列的值都相同才算相同。
 
-	SELECT DISTINCT col1, col2
-	FROM mytable;
+```mysql
+SELECT DISTINCT col1, col2
+FROM mytable;
+```
 
 ## LIMIT ##
 
@@ -101,39 +148,51 @@ TRUNCATE TABLE 可以清空表，也就是删除所有行。
 
 返回前 5 行：
 
-	SELECT *
-	FROM mytable
-	LIMIT 5;
+```mysql
+SELECT *
+FROM mytable
+LIMIT 5;
+```
 
 ----------
-	SELECT *
-	FROM mytable
-	LIMIT 0, 5;
+```mysql
+SELECT *
+FROM mytable
+LIMIT 0, 5;
+```
 
 返回第 3 ~ 5 行：
 
-	SELECT *
-	FROM mytable
-	LIMIT 2, 3;
+```mysql
+SELECT *
+FROM mytable
+LIMIT 2, 3;
+```
 
 # 八、排序 #
 
 - ASC ：升序（默认）
 - DESC ：降序
 
+DESC关键字只应用到直接位于其前面的列名
+
 可以按多个列进行排序，并且为每个列指定不同的排序方式：
 
-	SELECT *
-	FROM mytable
-	ORDER BY col1 DESC, col2 ASC;
+```mysql
+SELECT *
+FROM mytable
+ORDER BY col1 DESC, col2 ASC;
+```
 
 # 九、过滤 #
 
 不进行过滤的数据非常大，导致通过网络传输了多余的数据，从而浪费了网络带宽。因此尽量使用 SQL 语句来过滤不必要的数据，而不是传输所有的数据到客户端中然后由客户端进行过滤。
 
-	SELECT *
-	FROM mytable
-	WHERE col IS NULL;
+```mysql
+SELECT *
+FROM mytable
+WHERE col IS NULL;
+```
 
 下表显示了 WHERE 子句可用的操作符
 
@@ -166,13 +225,29 @@ IS NULL|	为 NULL 值
 
 - [ ] 可以匹配集合内的字符，例如 [ab] 将匹配字符 a 或者 b。用脱字符 ^ 可以对其进行否定，也就是不匹配集合内的字符。
 
-使用 Like 来进行通配符匹配。
+使用 Like 来进行通配符匹配。^有两种用法。在集合中(用[和]定义)，用它来否定该集合，否则，用来指串的开始处。
 
-	SELECT *
-	FROM mytable
-	WHERE col LIKE '[^AB]%'; -- 不以 A 和 B 开头的任意文本
+```mysql
+SELECT *
+FROM mytable
+WHERE col LIKE '[^AB]%'; -- 不以 A 和 B 开头的任意文本
+```
 
 不要滥用通配符，通配符位于开头处匹配会非常慢。
+
+### Like和REGEXP的区别
+
+- LIKE匹配整个列。如果被匹配的文本在列值中出现，LIKE将不会找到它，相应的行也不被返回(除非使用通配符)。而REGEXP在列值内进行匹配，如果被匹配的文本在列值中出现，REGEXP将会找到它，相应的行将被返回。这是一 个非常重要的差别。
+
+### REGEXP
+
+- 为了匹配特殊字符，必须用\\\为前导。\\\\-表示查找-，\\\\.表示查找.。
+
+![截屏2020-09-15 上午12.34.37](/Users/inlab/Library/Application Support/typora-user-images/截屏2020-09-15 上午12.34.37.png)
+
+![截屏2020-09-15 上午12.36.15](/Users/inlab/Downloads/Java-note-master/Images/截屏2020-09-15 上午12.36.15.png)
+
+![截屏2020-09-15 上午12.43.03](/Users/inlab/Library/Application Support/typora-user-images/截屏2020-09-15 上午12.43.03.png)
 
 # 十一、计算字段 #
 
@@ -180,13 +255,17 @@ IS NULL|	为 NULL 值
 
 计算字段通常需要使用 AS 来取别名，否则输出的时候字段名为计算表达式。
 
-	SELECT col1 * col2 AS alias
-	FROM mytable;
+```mysql
+SELECT col1 * col2 AS alias
+FROM mytable;
+```
 
 CONCAT() 用于连接两个字段。许多数据库会使用空格把一个值填充为列宽，因此连接的结果会出现一些不必要的空格，使用 TRIM() 可以去除首尾空格。
 
-	SELECT CONCAT(TRIM(col1), '(', TRIM(col2), ')') AS concat_col
-	FROM mytable;
+```mysql
+SELECT CONCAT(TRIM(col1), '(', TRIM(col2), ')') AS concat_col
+FROM mytable;
+```
 
 # 十二、函数 #
 
@@ -206,8 +285,10 @@ AVG() 会忽略 NULL 行。
 
 使用 DISTINCT 可以汇总不同的值。
 
-	SELECT AVG(DISTINCT col1) AS avg_col
-	FROM mytable;
+```mysql
+SELECT AVG(DISTINCT col1) AS avg_col
+FROM mytable;
+```
 
 ## 数值处理 ##
 
@@ -223,6 +304,21 @@ EXP()|	指数
 PI()|	圆周率
 RAND()|	随机数
 
+## 文本处理
+
+| 函数        | 说明   |
+| :-- | - |
+| Left()      | 返回串左边的字符 |
+| Length()    | 返回串的长度 |
+| Locate()    | 找出串的一个字串 |
+| Lower()     | 将串转化为小写 |
+| LTrim()     | 去掉串左边的空格 |
+| Right()     | 返回串右边的字符 |
+| RTrim()     | 去掉串右边的空格 |
+| Soundex()   | 将任何文本串转换为描述其语音表示的字母数字模式 |
+| SubString() | 返回子串的字符 |
+| Upper()     | 将串转换为大写 |
+
 # 十三、分组 #
 
 把具有相同的数据值的行放在同一组中。
@@ -231,24 +327,30 @@ RAND()|	随机数
 
 指定的分组字段除了能按该字段进行分组，也会自动按该字段进行排序。
 
-	SELECT col, COUNT(*) AS num
-	FROM mytable
-	GROUP BY col;
+```mysql
+SELECT col, COUNT(*) AS num
+FROM mytable
+GROUP BY col;
+```
 
 GROUP BY 自动按分组字段进行排序，ORDER BY 也可以按汇总字段来进行排序。
 
-	SELECT col, COUNT(*) AS num
-	FROM mytable
-	GROUP BY col
-	ORDER BY num;
+```mysql
+SELECT col, COUNT(*) AS num
+FROM mytable
+GROUP BY col
+ORDER BY num;
+```
 
 WHERE 过滤行，HAVING 过滤分组，行过滤应当先于分组过滤。
 
-	SELECT col, COUNT(*) AS num
-	FROM mytable
-	WHERE col > 2
-	GROUP BY col
-	HAVING num >= 2;
+```mysql
+SELECT col, COUNT(*) AS num
+FROM mytable
+WHERE col > 2
+GROUP BY col
+HAVING num >= 2;
+```
 
 分组规定：
 
@@ -263,19 +365,23 @@ WHERE 过滤行，HAVING 过滤分组，行过滤应当先于分组过滤。
 
 可以将子查询的结果作为 WHRER 语句的过滤条件：
 
-	SELECT *
-	FROM mytable1
-	WHERE col1 IN (SELECT col2
-	               FROM mytable2);
+```mysql
+SELECT *
+FROM mytable1
+WHERE col1 IN (SELECT col2
+               FROM mytable2);
+```
 
 下面的语句可以检索出客户的订单数量，子查询语句会对第一个查询检索出的每个客户执行一次：
 
-	SELECT cust_name, (SELECT COUNT(*)
-	                   FROM Orders
-	                   WHERE Orders.cust_id = Customers.cust_id)
-	                   AS orders_num
-	FROM Customers
-	ORDER BY cust_name;
+```mysql
+SELECT cust_name, (SELECT COUNT(*)
+                   FROM Orders
+                   WHERE Orders.cust_id = Customers.cust_id)
+                   AS orders_num
+FROM Customers
+ORDER BY cust_name;
+```
 
 # 十五、连接 #
 
@@ -283,21 +389,25 @@ WHERE 过滤行，HAVING 过滤分组，行过滤应当先于分组过滤。
 
 连接可以替换子查询，并且比子查询的效率一般会更快。
 
-可以用 AS 给列名、计算字段和表名取别名，给表名取别名是为了简化 SQL 语句以及连接相同表。
+可以用 AS 给列名、计算字段和表名取别名，给表名取别名是为了**简化 SQL 语句以及连接相同表**。
 
 ## 内连接 ##
 
 内连接又称等值连接，使用 INNER JOIN 关键字。
 
-	SELECT A.value, B.value
-	FROM tablea AS A INNER JOIN tableb AS B
-	ON A.key = B.key;
+```mysql
+SELECT A.value, B.value
+FROM tablea AS A INNER JOIN tableb AS B
+ON A.key = B.key;
+```
 
 可以不明确使用 INNER JOIN，而使用普通查询并在 WHERE 中将两个表中要连接的列用等值方法连接起来。
 
-	SELECT A.value, B.value
-	FROM tablea AS A, tableb AS B
-	WHERE A.key = B.key;
+```mysql
+SELECT A.value, B.value
+FROM tablea AS A, tableb AS B
+WHERE A.key = B.key;
+```
 
 ## 自连接 ##
 
@@ -307,20 +417,24 @@ WHERE 过滤行，HAVING 过滤分组，行过滤应当先于分组过滤。
 
 ### 子查询版本 ###
 
-	SELECT name
-	FROM employee
-	WHERE department = (
-	      SELECT department
-	      FROM employee
-	      WHERE name = "Jim");
+```mysql
+SELECT name
+FROM employee
+WHERE department = (
+      SELECT department
+      FROM employee
+      WHERE name = "Jim");
+```
 
 
 ### 自连接版本 ###
 
-	SELECT e1.name
-	FROM employee AS e1 INNER JOIN employee AS e2
-	ON e1.department = e2.department
-	      AND e2.name = "Jim";
+```mysql
+SELECT e1.name
+FROM employee AS e1 INNER JOIN employee AS e2
+ON e1.department = e2.department
+      AND e2.name = "Jim";
+```
 
 ## 自然连接 ##
 
@@ -328,8 +442,10 @@ WHERE 过滤行，HAVING 过滤分组，行过滤应当先于分组过滤。
 
 内连接和自然连接的区别：内连接提供连接的列，而自然连接自动连接所有同名列。
 
-	SELECT A.value, B.value
-	FROM tablea AS A NATURAL JOIN tableb AS B;
+```mysql
+SELECT A.value, B.value
+FROM tablea AS A NATURAL JOIN tableb AS B;
+```
 
 ## 外连接 ##
 
@@ -337,9 +453,11 @@ WHERE 过滤行，HAVING 过滤分组，行过滤应当先于分组过滤。
 
 检索所有顾客的订单信息，包括还没有订单信息的顾客。
 
-	SELECT Customers.cust_id, Customer.cust_name, Orders.order_id
-	FROM Customers LEFT OUTER JOIN Orders
-	ON Customers.cust_id = Orders.cust_id;
+```mysql
+SELECT Customers.cust_id, Customer.cust_name, Orders.order_id
+FROM Customers LEFT OUTER JOIN Orders
+ON Customers.cust_id = Orders.cust_id;
+```
 
 ### customers 表： ###
 
@@ -378,13 +496,15 @@ cust_id|	cust_name|	order_id
 
 只能包含一个 ORDER BY 子句，并且必须位于语句的最后。
 
-	SELECT col
-	FROM mytable
-	WHERE col = 1
-	UNION
-	SELECT col
-	FROM mytable
-	WHERE col =2;
+```mysql
+SELECT col
+FROM mytable
+WHERE col = 1
+UNION
+SELECT col
+FROM mytable
+WHERE col =2;
+```
 
 # 十七、视图 #
 
@@ -399,7 +519,9 @@ cust_id|	cust_name|	order_id
 - 通过只给用户访问视图的权限，保证数据的安全性；
 - 更改数据格式和表示。
 
+```mysql
 	CREATE VIEW myview AS
 	SELECT Concat(col1, col2) AS concat_col, col3*col4 AS compute_col
 	FROM mytable
 	WHERE col5 = val;
+```

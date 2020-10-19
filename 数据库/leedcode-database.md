@@ -187,16 +187,24 @@ Employee 表包含所有员工，他们的经理也属于员工。每个员工�
 
 给定 Employee 表，编写一个 SQL 查询，该查询可以获取收入超过他们经理的员工的姓名。在上面的表格中，Joe 是唯一一个收入超过他的经理的员工。
 
-	+----------+
-	| Employee |
-	+----------+
-	| Joe      |
-	+----------+
+```mysql
++----------+
+| Employee |
++----------+
+| Joe      |
++----------+
 
-	SELECT a.Name AS Employee
-	FROM Employee a, Employee b
-	WHERE a.Salary > b.Salary
-	    AND a.ManagerId = B.Id
+SELECT a.Name AS Employee
+FROM Employee a, Employee b
+WHERE a.Salary > b.Salary
+    AND a.ManagerId = B.Id
+
+#效率更高的实现方式
+select e.Name as Employee
+from Employee as e inner join Employee as m 
+on e.ManagerId = m.Id
+where e.Salary>m.Salary;
+```
 
 # 182. 查找重复的电子邮箱 #
 
@@ -306,15 +314,17 @@ Department 表包含公司所有部门的信息。
 ----------
 
 
-	SELECT Department.Name AS 'Department', Employee.Name AS 'Employee', Salary
-	FROM Employee JOIN Department
-	On Employee.DepartmentId = Department.id
-	WHERE (Employee.DepartmentId, Salary) IN 
-	(
-	    SELECT DepartmentId, MAX(Salary)
-	    FROM Employee
-	    GROUP BY DepartmentId
-	)
+```mysql
+SELECT Department.Name AS 'Department', Employee.Name AS 'Employee', Salary
+FROM Employee JOIN Department
+On Employee.DepartmentId = Department.id
+WHERE (Employee.DepartmentId, Salary) IN 
+(
+    SELECT DepartmentId, MAX(Salary)
+    FROM Employee
+    GROUP BY DepartmentId
+)
+```
 
 # 196. 删除重复的电子邮箱 #
 

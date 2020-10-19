@@ -101,3 +101,9 @@ Spring Boot Web starter使用Tomcat作为默认的嵌入式servlet容器, 如果
 @EnableAutoConfiguration 注解通过Spring 提供的 @Import 注解导入了AutoConfigurationImportSelector类（@Import 注解可以导入配置类或者Bean到当前类中）。
 
 AutoConfigurationImportSelector类中getCandidateConfigurations方法会将所有自动配置类的信息以 List 的形式返回。这些配置信息会被 Spring 容器当作 bean 来管理。
+
+
+
+
+
+参考链接：https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/reference/html/using-spring-boot.html#using-boot-auto-configuration
