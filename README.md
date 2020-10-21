@@ -5,7 +5,7 @@ Java后端编程学习技能树
 
 ### java相关 ###
 
-- Java基础
+- [Java基础](Java基础知识/Java基础.md)
 - Java集合
 - JVM
 - Java并发
@@ -27,4 +27,4 @@ Java后端编程学习技能树
 
 - Spring
 - SpringBoot
-# Java-Notes
+

@@ -300,6 +300,8 @@ public class ControllerExceptionHandler {
 
 错误页面异常信息显示处理：
 
+可以在**检查网页源代码**时看到错误信息
+
 ```html
 <div>
     <div th:utext="'&lt;!--'" th:remove="tag"></div>
@@ -509,6 +511,8 @@ public class LogAspect {
 **4、MD5加密**
 
 **5、登录拦截器**
+
+- 避免管理页面被直接访问
 
 ### 5.2 分类管理
 
